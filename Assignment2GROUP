@@ -1,0 +1,51 @@
+#CODE SO FAR, NEEDS THE REST AND COMMENTS
+from collections import deque
+from datetime import datetime
+class Patient:
+    def __init__(self, id, name, age, medical_history, current_issue):
+        self.id = id
+        self.name = name
+        self.age = age
+        self.medical_history = medical_history  # list
+        self.current_issue = current_issue
+        self.date = datetime.now()
+
+    def __repr__(self):
+        return f"Patient ID: {self.id}, Name: {self.name}, Age: {self.age}, Medical History: {self.medical_history}, Current Condition: {self.current_issue}, Admission Date: {self.date}"
+
+
+class Doctor:
+    def __init__(self, id, name):
+        self.id = id
+        self.name = name
+        # self.specialization = specialization
+
+    def __repr__(self):
+        return f"Doctor ID: {self.id}, Name: {self.name}"
+        # return f"Doctor ID: {self.id}, Name: {self.name}, Specialization: {self.specialization}"
+
+
+class Prescription:
+    def __init__(self, id, p_id, medication, dosage):
+        self.id = id
+        self.p_id = p_id
+        self.medication = medication
+        self.dosage = dosage
+        self.date = datetime.now()
+
+    def __repr__(self):
+        return f"Prescription ID: {self.id}, Patient ID: {self.p_id}, Medication: {self.medication}, Dosage: {self.dosage}, Prescription Date: {self.date}"
+
+
+class Appointment:
+    def __init__(self, id, p_id, doc_id, date):
+        self.id = id
+        self.p_id = p_id
+        self.doc_id = doc_id
+        self.date = date
+
+    def __repr__(self):
+        return f"Appointment ID: {self.id}, Patient ID: {self.p_id}, Doctor ID: {self.doc_id}, Appointment Date: {self.date}"
+
+
+class HospitalSystem: #ADD THE REST
