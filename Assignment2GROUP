@@ -1,130 +1,242 @@
 #ADD THE REST OF THE HOSPITAL CLASS AND THE CODE
-from collections import deque
+from collections import deque #Imports deque for queue implementations
 
 
-class ListNode:
+class ListNode: #node class for linked list
     def __init__(self, data=None):
-        self.data = data
-        self.next = None
-        self.prev = None
+        self.data = data #data of the node
+        self.next = None #pointer to next node
+        self.prev = None #pointer to previous node
 
 
-class LinkedList:
+class LinkedList: #linked list class
     def __init__(self):
-        self.start = None
+        self.start = None #start pointer of the linked list
 
     def add(self, value):
-        new_item = ListNode(value)
+        new_item = ListNode(value) #creating a new node with the given value
         if not self.start:
-            self.start = new_item
+            self.start = new_item #if list is empty the new item becomes the start
         else:
             iterator = self.start
             while iterator.next:
-                iterator = iterator.next
-            iterator.next = new_item
-            new_item.prev = iterator
+                iterator = iterator.next #goes throug till the end of the list
+            iterator.next = new_item #adds new item in the end
+            new_item.prev = iterator #updates previous pointer
 
     def rem(self, value):
         iterator = self.start
         while iterator:
-            if iterator.data == value:
+            if iterator.data == value: #searchs for the node with given value
                 if iterator.prev:
                     iterator.prev.next = iterator.next
                 else:
-                    self.start = iterator.next
+                    self.start = iterator.next #if first node then update start pointer
                 if iterator.next:
                     iterator.next.prev = iterator.prev
-                return True
+                return True #node found and removed
             iterator = iterator.next
-        return False
+        return False #node not found
 
     def __iter__(self):
-        self.current = self.start
+        self.current = self.start #initializing the current pointer for iteration
         return self
 
     def __next__(self):
         if self.current:
-            data = self.current.data
-            self.current = self.current.next
-            return data
+            data = self.current.data  #gets data of current node
+            self.current = self.current.next #moves to the next node
+            return data  #returns data of current node
         self.current = None
-        return None
+        return None #returns None when iteration is done
 
 
-class Patient:
-    def __init__(self, id_of_patient, name, age, medical_history, condition, date_of_Admission):
-        self.id_of_patient = id_of_patient
-        self.name = name
-        self.age = age
-        self.medical_history = medical_history
-        self.condition = condition
-        self.date_of_Admission = date_of_Admission
-        self.appointment = None
-        self.prescriptions = []
+class Patient: #patient class
+    def __init__(self, id_of_patient, name, age, medical_history, condition, date_of_Admission): #constructor
+        self.id_of_patient = id_of_patient #patient ID
+        self.name = name #name
+        self.age = age #age
+        self.medical_history = medical_history #medical history
+        self.condition = condition #condition
+        self.date_of_Admission = date_of_Admission #date
+        self.appointment = None #scheduled appointment
+        self.prescriptions = [] #List of prescriptions for the patient
 
-    def __str__(self):
+    def __str__(self): #string representaion
         return "ID: " + str(self.id_of_patient) + ", Name: " + self.name + ", Age: " + str(
             self.age) + ", Condition: " + self.condition + ", Date of Admission: " + str(self.date_of_Admission)
 
 
-class Doctor:
+class Doctor: #Doctor class
     def __init__(self, id, name, specialization):
-        self.id = id
-        self.name = name
-        self.specialization = specialization
+        self.id = id #doctor ID
+        self.name = name #name
+        self.specialization = specialization #doctor's specialization
 
     def __str__(self):
         return "ID: " + str(self.id) + ", Name: " + self.name + ", Specialization: " + self.specialization
 
 
-class Prescription:
+class Prescription: #prescription class
     def __init__(self, patient_name, medication_name, store_name, dose, how_to_take, doctor_name):
-        self.patient_name = patient_name
-        self.medication_name = medication_name
-        self.store_name = store_name
-        self.dose = dose
-        self.how_to_take = how_to_take
-        self.doctor_name = doctor_name
+        self.patient_name = patient_name #name of patient
+        self.medication_name = medication_name #name of medication
+        self.store_name = store_name #name of the store where medication is from
+        self.dose = dose #dose of medicine
+        self.how_to_take = how_to_take #instructions
+        self.doctor_name = doctor_name #doctors name
 
     def __str__(self):
         return "Patient: " + self.patient_name + ", Medication: " + self.medication_name + ", Store: " + self.store_name + ", Dose: " + self.dose + ", Instructions: " + self.how_to_take + ", Doctor: " + self.doctor_name
 
 
-class Hospital:
+class Hospital: #hospital class
     def __init__(self):
-        self.patients_queue = deque()
-        self.patient_records = LinkedList()
-        self.doctors = []
-        self.prescriptions_stack = []
-        self.doctor_queues = {}
-        self.initialize_doctors()
+        self.patients_queue = deque() #queue for patients
+        self.patient_records = LinkedList()  #linked list for patient records
+        self.doctors = [] #list of doctors
+        self.prescriptions_stack = [] #stack for prescriptions
+        self.doctor_queues = {} #dictionary for doctor queues
+        self.initialize_doctors() #initializing doctors
 
-    def initialize_doctors(self):
+    def initialize_doctors(self): #initializing doctors with their IDs, names, and specializations
         doctors_info = [
             {"id": "Doc01", "name": "Dr. AlSuwaidi", "expertise": "Neurology"},
             {"id": "Doc02", "name": "Dr. Almansoori", "expertise": "Dermatology"},
             {"id": "Doc03", "name": "Dr. Alremeithi", "expertise": "Dentistry"},
             {"id": "Doc04", "name": "Dr. AlAmeri", "expertise": "Hematology"},
             {"id": "Doc05", "name": "Dr. AlZaabi", "expertise": "Psychiatry"}
-        ]
+        ] #list of dictionaties with the doctors info
         for doctor_info in doctors_info:
             doctor = Doctor(doctor_info["id"], doctor_info["name"], doctor_info["expertise"])
-            self.doctors.append(doctor)
-            self.doctor_queues[doctor.id] = deque()
+            self.doctors.append(doctor) #adds doctor to the list
+            self.doctor_queues[doctor.id] = deque() #initializing doctor queues
 
-    def add_patient(self, patient):
-        self.patient_records.add(patient)
-        self.patients_queue.append(patient)
+    def add_patient(self, patient): #method to add patient to the hospital
+        self.patient_records.add(patient) #adds patient to records
+        self.patients_queue.append(patient) #adds patient to queue
 
-    def edit_patient(self, id_of_patient, name, age, medical_history, condition, date_of_Admission):
+    def edit_patient(self, id_of_patient, name, age, medical_history, condition, date_of_Admission): #method to edit patient details
+        iterator = self.patient_records.start #start iterating from the beginning of patient records
+        while iterator:
+            if iterator.data.id_of_patient == id_of_patient: #if patient ID matches
+                iterator.data.name = name #update patient name
+                iterator.data.age = age #update patient age
+                iterator.data.medical_history = medical_history #update patients medical history
+                iterator.data.condition = condition #update patients condition
+                iterator.data.date_of_Admission = date_of_Admission #updates data
+                return True #updates successfully
+            iterator = iterator.next
+        return False
+
+    def edit_patient_condition(self, patient_id, new_info, new_condition): 
         iterator = self.patient_records.start
         while iterator:
-            if iterator.data.id_of_patient == id_of_patient:
-                iterator.data.name = name
-                iterator.data.age = age
-                iterator.data.medical_history = medical_history
-                iterator.data.condition = condition
-                iterator.data.date_of_Admission = date_of_Admission
+            if iterator.data.id_of_patient == patient_id:
+                iterator.data.medical_history = new_info
+                iterator.data.condition = new_condition
+                print("*Patient condition updated successfully*")
                 return True
             iterator = iterator.next
+        print("Patient with the ID", patient_id, "not found.")
+        return False
+
+    def remove_patient(self, patient_id):
+        iterator = self.patient_records.start
+        while iterator:
+            if iterator.data.id_of_patient == patient_id:
+                self.patient_records.rem(iterator.data)
+                self.patients_queue.remove(iterator.data)
+                return True
+            iterator = iterator.next
+        return False
+
+    def schedule_appointment(self, patient_id, doctor_id):
+        # Check if the patient is already in the queue for this doctor
+        for patient in self.doctor_queues[doctor_id]:
+            if patient.id_of_patient == patient_id:
+                print("Patient already scheduled an appointment with this doctor")
+                return False
+        iterator = self.patient_records.start
+        while iterator:
+            if iterator.data.id_of_patient == patient_id:
+                iterator.data.appointment = doctor_id
+                self.doctor_queues[doctor_id].append(iterator.data)
+                print("*Appointment scheduled successfully*")
+                return True
+            iterator = iterator.next
+        print("Patient doesnt exist in record")
+        return False
+
+    def view_available_doctors(self):
+        for doctor in self.doctors:
+            print(doctor)
+
+    def view_appointments(self):
+        for doctor in self.doctors:
+            print("Doctor " + doctor.name + " (" + doctor.specialization + ")")
+            if self.doctor_queues[doctor.id]:
+                print("Patients scheduled for appointments:")
+                for patient in self.doctor_queues[doctor.id]:
+                    print("  Patient ID: " + patient.id_of_patient + ", Name: " + patient.name)
+            else:
+                print("No appointments for this doctor.")
+            print()
+
+    def view_prescriptions(self):
+        while self.prescriptions_stack:
+            prescription = self.prescriptions_stack.pop()
+            print(prescription)
+
+    def search_patient(self, patient_name):
+        iterator = self.patient_records.start
+        while iterator:
+            if iterator.data.name == patient_name:
+                print(iterator.data)
+                return
+            iterator = iterator.next
+
+    def transfer_patient(self, patient_name, current_doctor_id, new_doctor_id):
+        # Find the patient in the patient records
+        iterator = self.patient_records.start
+        while iterator:
+            if iterator.data.name == patient_name:
+                patient = iterator.data
+                if patient.appointment == current_doctor_id:
+                    self.doctor_queues[current_doctor_id].remove(patient)
+                    patient.appointment = new_doctor_id
+                    self.doctor_queues[new_doctor_id].append(patient)
+                    print("Patient", patient_name, "transferred successfully from Dr.", current_doctor_id, "to Dr.",
+                          new_doctor_id)
+                    return True
+                else:
+                    print("Patient", patient_name, "is not currently scheduled with Dr.", current_doctor_id)
+                    return False
+            iterator = iterator.next
+        print("Patient", patient_name, "not found.")
+        return False
+
+    def prescribe_medication(self):
+        patient_name = input("Patient Name = ")
+        patient_id = input("Patient Id = ")
+        doctor_name = input("Doctors name = ")
+        medication_name = input("Medication name = ")
+        store_name = input("Store from where you bought the medication = ")
+        dose = input("Dose of Capsule = ")
+        how_to_take = input("Instructions for the medication = ")
+
+        # Find the patient in the patient records
+        iterator = self.patient_records.start
+        while iterator:
+            if iterator.data.name == patient_name and iterator.data.id_of_patient == patient_id:
+                prescription = Prescription(patient_name, medication_name, store_name, dose, how_to_take, doctor_name)
+                iterator.data.prescriptions.append(prescription)
+                self.prescriptions_stack.append(prescription)
+                print("*Prescription added successfully*")
+                for doctor_id, queue in self.doctor_queues.items():
+                    if iterator.data in queue:
+                        queue.remove(iterator.data)
+                return True
+            iterator = iterator.next
+        print("Patient not found in the records.")
         return False
