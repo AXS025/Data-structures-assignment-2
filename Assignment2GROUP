@@ -1,5 +1,5 @@
-#ADD THE REST LATER
 from collections import deque #Imports deque for queue implementations
+
 
 class ListNode: #node class for linked list
     def __init__(self, data=None):
@@ -296,3 +296,188 @@ class Hospital: #hospital class
                 print("No appointment history available.")
         else:
             print("Patient not found.") #if the patient is not found
+
+
+def main():
+    hospital = Hospital()
+
+    while True: #loops until break
+        print()
+        print("Menu:")
+        print("1. Manager")
+        print("2. Doctor")
+        print("3. Summary of Patient")
+        print("4. Finish")
+
+        choice = input("Enter your choice: ") #takes user input for choice
+
+        if choice == '1': # If choice is Manager
+            print()
+            print()
+            print("Manager Menu:")
+            print("a. Entry of Patient")
+            print("b. Edit Patient")
+            print("c. Remove Patient")
+            print("d. View Patients Record")
+            print("e. View Available Doctors")
+            print("f. Appointment Schedule")
+            print("g. View Appointments")
+            print("h. View Prescriptions")
+            print("i. Finish")
+
+            manager_choice = input("Enter your choice: ") #takes user input
+            print()
+
+            if manager_choice == 'a': #if manager choice is to enter a patient
+                #takes input for patient details
+                id_of_patient = input("Patient ID = ")
+                name = input("Patient name = ")
+                age = input("Patient age = ")
+                medical_history = input("Patient medical history = ")
+                condition = input("Patient condition = ")
+                date_of_Admission = input("Patient date of admission = ")
+                patient = Patient(id_of_patient, name, age, medical_history, condition, date_of_Admission)
+                hospital.add_patient(patient)
+                print()
+                print("*Entry successful*")
+
+            if manager_choice == 'b': #if manager choice is to edit a patients details
+                id_of_patient = input("Edit patient ID = ")  #takes input for patient ID to edit
+                found = False
+                iterator = hospital.patient_records.start
+                while iterator:
+                    if iterator.data.id_of_patient == id_of_patient:
+                        found = True
+                        break
+                    iterator = iterator.next
+
+                if found: #if patient ID is found
+                    #takes input for new patient details
+                    name = input("Edit patient name = ")
+                    age = input("Edit patient age = ")
+                    medical_history = input("Edit patient medical history = ")
+                    condition = input("Edit patient condition = ")
+                    date_of_Admission = input("Enter patient date of admission = ")
+                    print()
+                    if hospital.edit_patient(id_of_patient, name, age, medical_history, condition, date_of_Admission):
+                        print("*Edit successful*")
+                    else:
+                        print("Failed to edit patient.")
+                else:
+                    print("Input ID is not in our system.")
+
+
+            elif manager_choice == 'c': #if manager choice is to remove a patient
+                patient_id = input("Patient ID to remove = ") #takes input for patient ID to remove
+                if hospital.remove_patient(patient_id):
+                    print("*Removed successfully*")
+                else:
+                    print("Provided id not found.")
+
+            elif manager_choice == 'd': #if manager choice is to view patient records
+                print("Patient Records:-")
+                iterator = hospital.patient_records.start
+                while iterator:
+                    print(iterator.data)
+                    iterator = iterator.next
+
+            elif manager_choice == 'e': #if manager choice is to view available doctors
+                print("Available Doctors:")
+                hospital.view_available_doctors()
+
+            elif manager_choice == 'f': #if manager choice is to schedule an appointment
+                print("Available Doctors:")
+                hospital.view_available_doctors()
+                print()
+                print("Patient Records:-")
+                iterator = hospital.patient_records.start
+                while iterator:
+                    print(iterator.data)
+                    iterator = iterator.next
+                patient_id = input("Patient ID = ")
+                doctor_id = input("Doctor ID =")
+                patient_found = False
+                doctor_found = False
+                patient_iterator = hospital.patient_records.start
+                doctor_iterator = None
+                while patient_iterator:
+                    if patient_iterator.data.id_of_patient == patient_id:
+                        patient_found = True
+                        break
+                    patient_iterator = patient_iterator.next
+
+                for doctor in hospital.doctors:
+                    if doctor.id == doctor_id:
+                        doctor_found = True
+                        doctor_iterator = doctor
+                        break
+
+                if patient_found and doctor_found:
+                    hospital.schedule_appointment(patient_iterator.data.id_of_patient, doctor_iterator.id)
+                else:
+                    print("Please make sure both are present")
+
+            elif manager_choice == 'g': #if manager choice is to view appointments
+                print("Appointments:")
+                hospital.view_appointments()
+
+            elif manager_choice == 'h':  #if manager choice is to view prescriptions
+                print("Prescriptions:")
+                hospital.view_prescriptions()
+
+            elif manager_choice == 'i':
+                continue
+
+        elif choice == '2': #if choice is Doctor
+            print()
+            print()
+            print("Doctor Menu:")
+            print("a. View Patient Record")
+            print("b. Edit Record")
+            print("c. Transfer Patient")
+            print("d. Prescribed Prescription")
+            print("e. Finish")
+
+            doctor_choice = input("Enter your choice: ")
+
+            if doctor_choice == 'a':  #if doctor choice is to view a patients record
+                patient_name = input("Patient Name = ")
+                hospital.search_patient(patient_name)
+
+            elif doctor_choice == 'b': #if doctor choice is to edit a patients record
+                patient_id = input("Patient id = ")
+                new_info = input("Edit Medical history = ")
+                new_condition = input("Edit Condition = ")
+                hospital.edit_patient_condition(patient_id, new_info, new_condition)
+
+            elif doctor_choice == 'c': #if doctor choice is to transfer a patient
+                patient_name = input("Patient name = ")
+                current_doctor_id = input("Current Doctor ID = ")
+                new_doctor_id = input("New Doctor ID = ")
+                hospital.transfer_patient(patient_name, current_doctor_id, new_doctor_id)
+
+            elif doctor_choice == 'd': #if doctor choice is to prescribe medication
+                hospital.prescribe_medication()
+
+            elif doctor_choice == 'e': #if doctor choice is to finish
+                continue
+
+        elif choice == '3':  #if the choice is to view a summary of a patient
+            print()
+            print("Summary of Patient Including All Details:")
+            patient_id = input("Patient ID =")
+            hospital.patient_summary(patient_id)
+            print()
+
+        elif choice == '4': #if the choice is to finish
+            print()
+            print()
+            print("Done!")
+            break
+
+        else:
+            print("Error")
+
+
+if __name__ == "__main__":
+    main() #calls the main function
