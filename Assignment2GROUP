@@ -1,4 +1,4 @@
-#ADD THE REST OF THE CLASSES
+#ADD THE REST OF THE HOSPITAL CLASS AND THE CODE
 from collections import deque
 
 
@@ -66,3 +66,65 @@ class Patient:
         return "ID: " + str(self.id_of_patient) + ", Name: " + self.name + ", Age: " + str(
             self.age) + ", Condition: " + self.condition + ", Date of Admission: " + str(self.date_of_Admission)
 
+
+class Doctor:
+    def __init__(self, id, name, specialization):
+        self.id = id
+        self.name = name
+        self.specialization = specialization
+
+    def __str__(self):
+        return "ID: " + str(self.id) + ", Name: " + self.name + ", Specialization: " + self.specialization
+
+
+class Prescription:
+    def __init__(self, patient_name, medication_name, store_name, dose, how_to_take, doctor_name):
+        self.patient_name = patient_name
+        self.medication_name = medication_name
+        self.store_name = store_name
+        self.dose = dose
+        self.how_to_take = how_to_take
+        self.doctor_name = doctor_name
+
+    def __str__(self):
+        return "Patient: " + self.patient_name + ", Medication: " + self.medication_name + ", Store: " + self.store_name + ", Dose: " + self.dose + ", Instructions: " + self.how_to_take + ", Doctor: " + self.doctor_name
+
+
+class Hospital:
+    def __init__(self):
+        self.patients_queue = deque()
+        self.patient_records = LinkedList()
+        self.doctors = []
+        self.prescriptions_stack = []
+        self.doctor_queues = {}
+        self.initialize_doctors()
+
+    def initialize_doctors(self):
+        doctors_info = [
+            {"id": "Doc01", "name": "Dr. AlSuwaidi", "expertise": "Neurology"},
+            {"id": "Doc02", "name": "Dr. Almansoori", "expertise": "Dermatology"},
+            {"id": "Doc03", "name": "Dr. Alremeithi", "expertise": "Dentistry"},
+            {"id": "Doc04", "name": "Dr. AlAmeri", "expertise": "Hematology"},
+            {"id": "Doc05", "name": "Dr. AlZaabi", "expertise": "Psychiatry"}
+        ]
+        for doctor_info in doctors_info:
+            doctor = Doctor(doctor_info["id"], doctor_info["name"], doctor_info["expertise"])
+            self.doctors.append(doctor)
+            self.doctor_queues[doctor.id] = deque()
+
+    def add_patient(self, patient):
+        self.patient_records.add(patient)
+        self.patients_queue.append(patient)
+
+    def edit_patient(self, id_of_patient, name, age, medical_history, condition, date_of_Admission):
+        iterator = self.patient_records.start
+        while iterator:
+            if iterator.data.id_of_patient == id_of_patient:
+                iterator.data.name = name
+                iterator.data.age = age
+                iterator.data.medical_history = medical_history
+                iterator.data.condition = condition
+                iterator.data.date_of_Admission = date_of_Admission
+                return True
+            iterator = iterator.next
+        return False
