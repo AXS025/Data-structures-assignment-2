@@ -1,135 +1,68 @@
-#NOW ADD TEST CASES AND COMMENTS
+#ADD THE REST OF THE CLASSES
 from collections import deque
-from datetime import datetime
+
+
+class ListNode:
+    def __init__(self, data=None):
+        self.data = data
+        self.next = None
+        self.prev = None
+
+
+class LinkedList:
+    def __init__(self):
+        self.start = None
+
+    def add(self, value):
+        new_item = ListNode(value)
+        if not self.start:
+            self.start = new_item
+        else:
+            iterator = self.start
+            while iterator.next:
+                iterator = iterator.next
+            iterator.next = new_item
+            new_item.prev = iterator
+
+    def rem(self, value):
+        iterator = self.start
+        while iterator:
+            if iterator.data == value:
+                if iterator.prev:
+                    iterator.prev.next = iterator.next
+                else:
+                    self.start = iterator.next
+                if iterator.next:
+                    iterator.next.prev = iterator.prev
+                return True
+            iterator = iterator.next
+        return False
+
+    def __iter__(self):
+        self.current = self.start
+        return self
+
+    def __next__(self):
+        if self.current:
+            data = self.current.data
+            self.current = self.current.next
+            return data
+        self.current = None
+        return None
+
+
 class Patient:
-    def __init__(self, id, name, age, medical_history, current_issue):
-        self.id = id
+    def __init__(self, id_of_patient, name, age, medical_history, condition, date_of_Admission):
+        self.id_of_patient = id_of_patient
         self.name = name
         self.age = age
-        self.medical_history = medical_history  # list
-        self.current_issue = current_issue
-        self.date = datetime.now()
+        self.medical_history = medical_history
+        self.condition = condition
+        self.date_of_Admission = date_of_Admission
+        self.appointment = None
+        self.prescriptions = []
 
-    def __repr__(self):
-        return f"Patient ID: {self.id}, Name: {self.name}, Age: {self.age}, Medical History: {self.medical_history}, Current Condition: {self.current_issue}, Admission Date: {self.date}"
+    def __str__(self):
+        return "ID: " + str(self.id_of_patient) + ", Name: " + self.name + ", Age: " + str(
+            self.age) + ", Condition: " + self.condition + ", Date of Admission: " + str(self.date_of_Admission)
 
-class Doctor:
-    def __init__(self, id, name):
-        self.id = id
-        self.name = name
-        # self.specialization = specialization
-
-    def __repr__(self):
-        return f"Doctor ID: {self.id}, Name: {self.name}"
-        # return f"Doctor ID: {self.id}, Name: {self.name}, Specialization: {self.specialization}"
-
-
-class Prescription:
-    def __init__(self, id, p_id, medication, dosage):
-        self.id = id
-        self.p_id = p_id
-        self.medication = medication
-        self.dosage = dosage
-        self.date = datetime.now()
-
-    def __repr__(self):
-        return f"Prescription ID: {self.id}, Patient ID: {self.p_id}, Medication: {self.medication}, Dosage: {self.dosage}, Prescription Date: {self.date}"
-
-
-class Appointment:
-    def __init__(self, id, p_id, doc_id, date):
-        self.id = id
-        self.p_id = p_id
-        self.doc_id = doc_id
-        self.date = date
-
-    def __repr__(self):
-        return f"Appointment ID: {self.id}, Patient ID: {self.p_id}, Doctor ID: {self.doc_id}, Appointment Date: {self.date}"
-
-
-class HospitalSystem:
-    def __init__(self):
-        self.patients = []
-        self.doctors = []
-        self.appointments = []
-        self.prescription_stack = []
-        self.consultation_queue = deque()
-
-    def display_patients(self):
-        if self.patients:
-            print("Patients:")
-            for patient in self.patients:
-                print(patient)
-        else:
-            print("No patients in the system.")
-
-    def display_doctors(self):
-        if self.doctors:
-            print("Doctors:")
-            for doctor in self.doctors:
-                print(doctor)
-        else:
-            print("No doctors in the system.")
-
-    def display_appointments(self):
-        if self.appointments:
-            print("Appointments:")
-            for appointment in self.appointments:
-                print(appointment)
-        else:
-            print("No appointments scheduled.")
-
-    def add_patient(self, p):
-        self.patients.append(p)
-
-    def add_doctor(self, d):
-        self.doctors.append(d)
-
-    def sort_patients_by_admission_date(self):
-        self.patients.sort(key=lambda x: x.date)
-
-    def enqueue_patient_for_consultation(self, p_id):
-        self.consultation_queue.append(p_id)
-
-    def dequeue_patient(self, p_id):
-        if p_id in self.consultation_queue:
-            return self.consultation_queue.popleft()
-        else:
-            return None
-
-    def schedule_appointment(self, p_id, doc_id, date_time):  # specific doctor can be selected with the doctor id
-        appointment_id = len(self.appointments) + 1
-        appointment = Appointment(appointment_id, p_id, doc_id, date_time)
-        self.appointments.append(appointment)
-
-    def add_prescription(self, p):
-        self.prescription_stack.append(p)
-
-    def issue_prescriptions(self, p_id, medication, dosage):
-        prescription_id = len(self.prescription_stack) + 1
-        pres = Prescription(prescription_id, p_id, medication, dosage)
-        self.add_prescription(pres)
-
-    def update_patient_record(self, p_id, new_info):
-        for patient in self.patients:
-            if patient.id == p_id:
-                patient.medical_history.append(new_info)
-
-    def meet_doctor(self, p_id, medication, dosage, new_info):
-        self.dequeue_patient(p_id)
-        self.issue_prescriptions(p_id, medication, dosage)
-        self.update_patient_record(p_id, new_info)
-
-    def search_patient_summary(self, p_id):
-        patient = next((p for p in self.patients if p.id == p_id), None)
-        if patient:
-            appointment = next((a for a in self.appointments if a.p_id == p_id), None)
-            prescriptions = [p for p in self.prescription_stack if p.p_id == p_id]
-            doctor = next((d for d in self.doctors if d.id == appointment.doc_id), None) if appointment else None
-            return {
-                "Patient Details": patient,
-                "Doctor Attending": doctor,
-                "Appointment Details": appointment,
-                "Prescriptions": prescriptions}
-        else:
-            return "Patient not found in records"
