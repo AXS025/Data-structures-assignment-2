@@ -1,0 +1,29 @@
+#Part A
+class BSTNode:
+    def __init__(self, datetime_value, post):
+        self.datetime_value = datetime_value
+        self.post = post
+        self.left = None
+        self.right = None
+
+class BinarySearchTree: 
+    def __init__(self):
+        self.root = None
+
+    def insert(self, datetime_value, post): 
+        if not self.root: 
+            self.root = BSTNode(datetime_value, post)
+        else: 
+            self._insert_recursive(self.root, datetime_value, post)
+
+    def _insert_recursive(self, node, datetime_value, post):
+        if datetime_value < node.datetime_value:
+            if not node.left:
+                node.left = BSTNode(datetime_value, post)
+            else:
+                self._insert_recursive(node.left, datetime_value, post)
+        else:
+            if not node.right:
+                node.right = BSTNode(datetime_value, post)
+            else:
+                self._insert_recursive(node.right, datetime_value, post)
