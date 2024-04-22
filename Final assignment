@@ -29,61 +29,86 @@ class BinarySearchTree: #BST class
                 self._insert_recursive(node.right, datetime_value, post)
 
 class SocialHashTable: #class for a hash table for social media posts
-    def __init__(self):
-        self.table = {}
+    def __init__(self): #constructor to initialize the hash table with an empty dictionary
+        self.table = {} #dictionary to add values
 
-    def insert(self, key, value):
+    def insert(self, key, value): #method to insert values into the hash table
         self.table[key] = value
 
-    def get(self, key):
+    def get(self, key): #method to get value based on a key from the hash table
         return self.table.get(key, None)
 
-class Post:
-    def __init__(self):
-        self.posts_by_datetime = SocialHashTable()
-        self.bst = BinarySearchTree()
-        self.posts_by_views = []
-        self.view_count = 0
+class Post: #class for a social media posts
+    def __init__(self): #constructor to initialize the post attributes
+        self.posts_by_datetime = SocialHashTable() #hash table to store posts by datetime
+        self.bst = BinarySearchTree() #calling BST class
+        self.posts_by_views = [] #list for the posts
+        self.view_count = 0 #counter, initilizes by 0
 
-    def add_post(self, datetime_value, person_name, post_content, views):
+    def add_post(self, datetime_value, person_name, post_content, views): #method to add a post with datetime, person name, content, and views
         self.posts_by_datetime.insert(datetime_value, {'name': person_name, 'content': post_content, 'views': views})
         self.bst.insert(datetime_value, {'name': person_name, 'content': post_content, 'views': views})
 
-    def find_post_by_datetime(self, datetime_value):
+    def find_post_by_datetime(self, datetime_value): #method to find post by date and time
         return self.posts_by_datetime.get(datetime_value)
 
-    def find_posts_in_time_range(self, start_datetime, end_datetime):
+    def find_posts_in_time_range(self, start_datetime, end_datetime): #method to find posts within a time range
         posts_in_range = []
         self._search_range(self.bst.root, start_datetime, end_datetime, posts_in_range)
         return posts_in_range
 
-    def _search_range(self, node, start_datetime, end_datetime, result):
+    def _search_range(self, node, start_datetime, end_datetime, result): #method to search post in range from BST
         if not node:
             return
-        if start_datetime <= node.datetime_value <= end_datetime:
+        if start_datetime <= node.datetime_value <= end_datetime: #if datetime is less than node datetime and end datetime append in list
             result.append(node.post)
-        if start_datetime < node.datetime_value:
+        if start_datetime < node.datetime_value: #if input value is less than node value search in left
             self._search_range(node.left, start_datetime, end_datetime, result)
-        if end_datetime > node.datetime_value:
+        if end_datetime > node.datetime_value:  #if input value is greater than node value search in right
             self._search_range(node.right, start_datetime, end_datetime, result)
 
-    def add_post_with_views(self, views, post_content, person_name):
+    def add_post_with_views(self, views, post_content, person_name):#method to add post with views
         self.view_count += 1
         self._heap_insert((-views, self.view_count, post_content, person_name))
 
-    def _heap_insert(self, item):
+    def _heap_insert(self, item):#method to insert value in heap
         self.posts_by_views.append(item)
         self._max_heapify_up(len(self.posts_by_views) - 1)
 
-    def _max_heapify_up(self, index):
+    def _max_heapify_up(self, index):#method of heaify up to take highest node to the root
         parent_index = (index - 1) // 2
-        while parent_index >= 0 and self.posts_by_views[parent_index][0] > self.posts_by_views[index][0]:
-            self.posts_by_views[parent_index], self.posts_by_views[index] = self.posts_by_views[index], self.posts_by_views[parent_index]
-            index = parent_index
+        while parent_index >= 0 and self.posts_by_views[parent_index][0] > self.posts_by_views[index][0]: #while loop to check the root node and its views
+            self.posts_by_views[parent_index], self.posts_by_views[index] = self.posts_by_views[index], self.posts_by_views[parent_index] #swaps the node with parent node that is the property of heap
+            index = parent_index #sets parent index to index
             parent_index = (index - 1) // 2
 
-    def get_post_with_most_views(self):
+    def get_post_with_most_views(self): #method to get post with most views
         if self.posts_by_views:
             return self.posts_by_views[0][2], self.posts_by_views[0][3]
         else:
             return None
+
+manager = Post() #object for post class
+
+#Posts in post class
+manager.add_post('2024-03-19 10:00:00', 'Alyazy', 'Hello!', 10)
+manager.add_post('2024-03-19 12:00:00', 'Shatha', 'Hey', 15)
+manager.add_post('2024-03-20 08:00:00', 'Afra', 'Hii', 20)
+manager.add_post('2024-03-22 08:00:00', 'Mera', 'Bye!', 20)
+
+#finds post by date and time
+print("Finding post by datetime:")
+print(manager.find_post_by_datetime('2024-03-19 10:00:00'))
+print(manager.find_post_by_datetime('2024-03-19 12:00:00'))
+
+#finds post in a time range
+print("Finding posts in time range:")
+print(manager.find_posts_in_time_range('2024-03-19 09:00:00', '2024-03-20 12:00:00'))
+
+#posts with views
+manager.add_post_with_views(300, 'Lets go!', 'Khalifa')
+manager.add_post_with_views(500, 'New home!', 'Mariam')
+
+#prints post with most views
+print("Post with most views:")
+print(manager.get_post_with_most_views())
