@@ -253,3 +253,103 @@ plt.axis('off')
 #prints the plot
 plt.show()
 
+
+#PART B:1.3
+import networkx as nx #for graph operations
+import random #for generating random values
+import matplotlib.pyplot as plt #for ploting
+
+def generate_road_network(num_intersections, num_roads): #generate a road network graph
+    G = nx.Graph() #empty graph
+
+    for i in range(num_intersections): #makes the intersections
+        G.add_node(i, type='intersection', id=i) #adds intersection nodes to the graph their own IDs
+
+    for i in range(num_roads):#creates the roads
+        start = random.randint(0, num_intersections - 1) #randomly selects start intersections for each road
+        end = random.randint(0, num_intersections - 1) #same of end intersections for each road
+        while start == end or G.has_edge(start, end): #for no self loops/parallel edges
+            end = random.randint(0, num_intersections - 1)
+        length = random.randint(5, 100) #random length
+        congestion = random.uniform(5, 50) #random congestion 
+        road_id = i
+        road_name = "Street" + str(i)
+        G.add_edge(start, end, id=road_id, name=road_name, length=length, congestion=congestion) #adds road edges to the graph
+
+    return G
+
+
+def dijkstra_shortest_path(graph, start, end): #function to find the shortest path using Dijkstra algorithm
+    distances = {node: float('inf') for node in graph.nodes()} #initializes distances dictionary with infinite distance for each node
+    distances[start] = 0
+    
+    visited = set() #for visited set
+    
+    previous = {}  #previous node dictionary to construct the path
+    
+    while len(visited) < len(graph.nodes()): #goes through till all nodes are visited
+        #looks for the unvisited node with the smallest distance
+        min_distance = float('inf') #initialize with infinity
+        min_node = None #initialize the minimum node as None
+        for node in graph.nodes():
+            if node not in visited and distances[node] < min_distance: #checks if the node is unvisited and has a smaller distance
+                min_distance = distances[node] #update the minimum distance
+                min_node = node #update the minimum node
+        
+        visited.add(min_node) #marks the node as visited
+        
+        for neighbor in graph.neighbors(min_node): #update the distances for neighboring nodes
+            #if neighbour is not visited
+            if neighbor not in visited:
+                edge_length = graph[min_node][neighbor]['length'] #get the length of the edge
+                new_distance = distances[min_node] + edge_length #calculate the new distance
+                if new_distance < distances[neighbor]: #checks if the new distance is shorter than the current distance
+                    distances[neighbor] = new_distance #update the distance
+                    previous[neighbor] = min_node #update the previous node
+    
+    #reconstructs the shortest path
+    path = [end] #starts with the end node
+    while path[-1] != start: #continue until reaching the start node
+        path.append(previous[path[-1]]) #append the previous node to the path
+    path.reverse() #reverse the path to get it from start to end
+    
+    return distances[end], path  #returns the shortest distance and the path
+
+
+print("make sure that the number of roads is more than the number of intersections to make the graph connected")
+print()
+#user inputs the intersection and roads 
+num_intersections = int(input("Enter the number of intersections: "))
+num_roads = int(input("Enter the number of roads: "))
+
+#calls the function to add in graph
+road_network = generate_road_network(num_intersections, num_roads)
+
+#plots the graph
+plt.figure(figsize=(15, 15))
+pos = nx.spring_layout(road_network, scale=8)  # Layout algorithm
+nx.draw(road_network, pos, with_labels=True, node_size=200, node_color='pink', font_size=7, font_weight='bold')
+
+#adds edge labels
+edge_labels = {(u, v): "ID: " + str(d['id']) + ", Name: " + d['name'] + ", Length: " + str(d['length']) + ", Congestion: " + str(round(d['congestion'], 2)) 
+               for u, v, d in road_network.edges(data=True)}
+nx.draw_networkx_edge_labels(road_network, pos, edge_labels=edge_labels, font_color='green', font_size=7)
+
+#title and axis
+plt.title("Road Network Visualization")
+plt.axis('off')
+#plots the graph
+plt.show()
+
+#shortest path
+start_intersection = int(input("Enter the Start Point: "))
+end_intersection = int(input("Enter the End Point: "))    
+shortest_distance, shortest_path = dijkstra_shortest_path(road_network, start_intersection, end_intersection)
+
+#prints the shortest disance and path
+path_str = ''
+for vertex in shortest_path:
+    path_str += '->' + str(vertex)
+path_str = path_str[2:]
+print("Shortest distance from intersection " + str(start_intersection) + " to intersection " + str(end_intersection) + ": " + str(round(shortest_distance, 2)))
+print("Shortest path: " + path_str)
