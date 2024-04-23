@@ -112,3 +112,31 @@ manager.add_post_with_views(500, 'New home!', 'Mariam')
 #prints post with most views
 print("Post with most views:")
 print(manager.get_post_with_most_views())
+
+#TEST CASES FOR PART A ARE INCLUDED IN THE PDF
+
+#PART B:1.1
+#Importing needed libraries of python 
+import networkx as nx #for graph operations
+import random #for generating random values
+import matplotlib.pyplot as plt #for ploting
+
+def generate_road_network(num_intersections, num_roads): #function to generate a road network graph
+    G = nx.Graph() #creates an empty graph
+
+    for i in range(num_intersections): #create intersections
+        G.add_node(i, type='intersection', id=i) #adds intersection nodes to the graph
+
+    for i in range(num_roads): #creates roads
+        #randomly picks start/end intersections for each road
+        start = random.randint(0, num_intersections - 1) #start
+        end = random.randint(0, num_intersections - 1) #end
+        while start == end or G.has_edge(start, end): #makes sure no self loops/parallel edges
+            end = random.randint(0, num_intersections - 1)
+        length = random.randint(5, 100) #random length for the road
+        congestion = random.uniform(5, 50)  #random congestion level for the road
+        road_id = i
+        road_name = "Street" + str(i)
+        G.add_edge(start, end, id=road_id, name=road_name, length=length, congestion=congestion) #adds road edges to the graph
+
+    return G
