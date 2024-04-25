@@ -1,0 +1,58 @@
+#Test case 1
+manager.add_post('2020-06-23 10:00:00', 'Afra', 'Love the view', 600)
+manager.add_post('2021-04-19 12:53:00', 'Alyazy', 'My new puppy!', 760)
+manager.add_post('2022-04-20 08:50:00', 'Shatha', 'New car', 100)
+
+print("Finding post by datetime:")
+print(manager.find_post_by_datetime('2020-06-23 10:00:00'))
+print(manager.find_post_by_datetime('2025-03-11 12:00:00'))
+
+print("Finding posts in time range:")
+print(manager.find_posts_in_time_range('2021-04-19 09:00:00', '2022-04-19 13:00:00'))
+
+manager.add_post_with_views(400, 'Love this movie', 'Alyazy')
+manager.add_post_with_views(100, 'ZU!', 'Mohamed')
+
+print("Post with the most views:")
+print(manager.get_post_with_most_views())
+
+
+
+#Test case 2
+manager.add_post('2021-07-10 10:00:00', 'Hamda', 'My new shoes', 200)
+manager.add_post('2022-08-15 12:00:00', 'Mera', 'My favorite movie', 350)
+manager.add_post('2017-02-3 07:00:00', 'Mozzah', 'My favorite book', 500)
+
+print("Finding post by datetime:")
+print(manager.find_post_by_datetime('2004-12-12 10:00:00'))
+print(manager.find_post_by_datetime('2017-02-3 07:00:00'))
+
+print("Finding posts in time range:")
+print(manager.find_posts_in_time_range('2020-07-10 09:00:00', '2022-08-14 13:00:00'))
+
+manager.add_post_with_views(80, 'My best friend', 'Ahmed')
+manager.add_post_with_views(70, 'Happy birthday', 'Zayed')
+
+print("Post with the most views:")
+print(manager.get_post_with_most_views())
+
+
+
+#test case 3
+manager.add_post('2022-08-12 08:00:00', 'Fatima', 'Burj Khalifa', 1100)
+manager.add_post('2023-04-05 12:15:00', 'Maryam', 'The great wall of china', 9150)
+manager.add_post('2024-01-28 08:45:00', 'Rouda', 'Fireworks!', 11100)
+
+print("Finding post by datetime:")
+print(manager.find_post_by_datetime('2022-08-12 08:00:00'))
+print(manager.find_post_by_datetime('2024-01-28 08:45:00'))
+
+print("Finding posts in time range:")
+print(manager.find_posts_in_time_range('2020-07-10 09:00:00', '2022-08-14 13:00:00'))
+
+manager.add_post_with_views(20, 'Traveling', 'Rashid')
+manager.add_post_with_views(1300, 'Chocolate cake!', 'Hind')
+
+print("Post with the most views:")
+print(manager.get_post_with_most_views())
+
